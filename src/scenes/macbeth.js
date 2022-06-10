@@ -1,6 +1,6 @@
-class Talking extends Phaser.Scene {
+class Macbeth extends Phaser.Scene {
     constructor() {
-        super("talkingScene");
+        super("macbethScene");
 
         // dialog constants
         this.DBOX_X = 0;			    // dialog box x-position
@@ -28,10 +28,9 @@ class Talking extends Phaser.Scene {
         this.nextText = null;			// player prompt text to continue typing
 
         // character variables
-        this.homer = null;
-        this.minerva = null;
-        this.neptune = null;
-        this.jove = null;
+        this.Witch1= null;
+        this.Witch2 = null;
+        this.Witch3 = null;
         this.tweenDuration = 500;
 
         this.OFFSCREEN_X = -500;        // x,y values to place characters offscreen
@@ -40,8 +39,8 @@ class Talking extends Phaser.Scene {
 
     create() {
         // parse dialog from JSON file
-        this.dialog = this.cache.json.get('dialog');
-        //console.log(this.dialog);
+        this.dialog = this.cache.json.get('macbeth');
+        console.log(this.dialog);
 
         // add dialog box sprite
         this.dialogbox = this.add.sprite(this.DBOX_X, this.DBOX_Y, 'dialogbox').setOrigin(0);
@@ -51,11 +50,15 @@ class Talking extends Phaser.Scene {
         this.nextText = this.add.bitmapText(this.NEXT_X, this.NEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
 
         // ready the character dialog images offscreen
-        this.homer = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'homer').setOrigin(0, 1);
-        this.minerva = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'minerva').setOrigin(0, 1);
-        this.neptune = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'neptune').setOrigin(0, 1);
-        this.jove = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'jove').setOrigin(0, 1);
-
+        this.homer = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+100, 'witch1').setOrigin(0, 1);
+        this.homer.scale = 0.15;
+        this.homer.depth = -2;
+        this.minerva = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+120, 'witch2').setOrigin(0, 1);
+        this.minerva.scale = 0.15;
+        this.minerva.depth = -2;
+        this.neptune = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+60, 'witch3').setOrigin(0, 1);
+        this.neptune.scale = 0.20;
+        this.neptune.depth = -2;
         // input
         cursors = this.input.keyboard.createCursorKeys();
 
@@ -89,6 +92,9 @@ class Talking extends Phaser.Scene {
         */
 
         // make sure there are lines left to read in this convo, otherwise jump to next convo
+        console.log(this.dialogLine);
+        console.log(this.dialogConvo);
+        console.log(this.dialog[this.dialogConvo].length);
         if(this.dialogLine > this.dialog[this.dialogConvo].length - 1) {
             this.dialogLine = 0;
             // I increment conversations here, but you could create logic to exit the dialog here
@@ -109,9 +115,11 @@ class Talking extends Phaser.Scene {
                     ease: 'Linear'
                 });
             }
+
             // make text box invisible
             this.dialogbox.visible = false;
-            this.scene.start("macbethScene");
+            this.scene.restart();
+
         } else {
             // if not, set current speaker
             this.dialogSpeaker = this.dialog[this.dialogConvo][this.dialogLine]['speaker'];
